@@ -1,0 +1,135 @@
+import React, { useRef } from "react";
+import classNames from "classnames";
+import "./index.scss";
+
+type ResizeType = "top" | "bottom" | "left" | "right";
+type MinSize = { width: number; height: number };
+
+interface ResizeProps {
+    /**类名称**/
+    className?: string;
+    /**内联样式**/
+    style?: React.CSSProperties;
+    /**最外面包裹的元素默认是div**/
+    is?: string;
+    /**宽度和高度的最小值**/
+    minSize?: Partial<MinSize> | number;
+    /**哪些边允许调整**/
+    type?: ResizeType | Array<ResizeType> | "all";
+    /**调整尺寸完成后的回调**/
+    onResizeEnd?: (rect: DOMRect) => void;
+}
+const defaultMinSize = { width: 0, height: 0 };
+/**
+ * 调整元素的宽高
+ * @param className
+ * @param style
+ * @param minSize
+ * @param type
+ * @param children
+ * @param onResizeEnd
+ * @param is
+ * @constructor
+ */
+const StretchResize: React.FC<ResizeProps> = ({
+                                           className,
+                                           style,
+                                           minSize = defaultMinSize,
+                                           type = "all",
+                                           children,
+                                           onResizeEnd,
+                                           is = "div",
+                                       }) => {
+    const ref = useRef<{ dragStart?:number,cssText?:string }>({});
+    const drag = useRef<HTMLDivElement>(null);
+
+    const _minSize: MinSize =
+        typeof minSize == "object"
+            ? { ...defaultMinSize, ...minSize }
+            : { width: minSize, height: minSize };
+
+    let _type: Array<ResizeType>;
+    if (Array.isArray(type)) {
+        _type = Array.from(new Set(type));
+    } else if (type === "all") {
+        _type = ["top", "bottom", "left", "right"];
+    } else {
+        _type = [type];
+    }
+
+    const handleMouseDown = (
+        e: React.MouseEvent<HTMLDivElement>,
+        direction: string
+    ) => {
+        const len =
+            direction === "left" || direction === "right" ? "width" : "height";
+        const isRightOrBottom = direction === "right" || direction === "bottom";
+        const isWidth = len === "width";
+
+        document.body.style.userSelect = "none";
+        document.body.style.cursor = isWidth ? "ew-resize" : "n-resize";
+
+        ref.current.dragStart = isWidth ? e.clientX : e.clientY;
+
+        ref.current.cssText = document.body.style.cssText;
+
+        const size = drag.current!.getBoundingClientRect()[len];
+        const getDimension = (e: MouseEvent) => (isWidth ? e.clientX : e.clientY);
+
+        const moveListener = (e: MouseEvent) => {
+            const diff = getDimension(e) - ref.current.dragStart;
+            const _size = isRightOrBottom ? size + diff : size - diff;
+            if (_size > _minSize[len]) {
+                drag.current!.style[len] = `${_size}px`;
+            }
+        };
+        const upListener = (e: MouseEvent) => {
+            document.removeEventListener("mousemove", moveListener);
+            document.removeEventListener("mouseup", upListener);
+            document.removeEventListener("drag", moveListener);
+            document.removeEventListener("dragend", upListener);
+            const diff = getDimension(e) - ref.current.dragStart;
+            const _size = isRightOrBottom ? size + diff : size - diff;
+            if (_size > _minSize[len]) {
+                drag.current!.style[len] = `${_size}px`;
+            }
+            ref.current = {};
+            if (ref.current.cssText) {
+                document.body.setAttribute("style", ref.current.cssText);
+            } else {
+                document.body.removeAttribute("style");
+            }
+            onResizeEnd?.(drag.current!.getBoundingClientRect());
+        };
+        document.addEventListener("mousemove", moveListener);
+        document.addEventListener("mouseup", upListener);
+        document.addEventListener("drag", moveListener);
+        document.addEventListener("dragend", upListener);
+    };
+    return React.createElement(
+        is,
+        { ref: drag, style, className: classNames('stretch-resize', className) },
+        <>
+            {children}
+            {_type.map((item) => {
+                return (
+                    <div
+                        key={item}
+                        draggable="false"
+                        className={classNames(
+                            'stretch-resize-drag',
+                            item === "left" && 'stretch-resize-left',
+                            item === "right" && 'stretch-resize-right',
+                            item === "top" && 'stretch-resize-top',
+                            item === "bottom" && 'stretch-resize-bottom'
+                        )}
+                        onMouseDown={(e) => handleMouseDown(e, item)}
+                    />
+                );
+            })}
+        </>
+    );
+};
+
+export default StretchResize;
+

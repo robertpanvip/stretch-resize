@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "outDir": "../dist",
+        "sourceMap": false,
+        "noImplicitAny": true,
+        "strictNullChecks": false,
+        "module": "commonjs",
+        "target": "ESNext",
+        "jsx": "react",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "moduleResolution": "node",
+        "removeComments": false,
+        "allowJs": true,
+        "declaration": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "allowSyntheticDefaultImports": true
+    },
+    "exclude": [
+        "node_modules",
+        "lib",
+        "es",
+        "dist"
+    ]
+}

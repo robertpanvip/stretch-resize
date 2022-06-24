@@ -1,0 +1,42 @@
+
+.stretch-resize {
+    position: relative;
+
+    .stretch-resize-drag {
+        position: absolute;
+        opacity: 0;
+
+        &.stretch-resize-left {
+            cursor: ew-resize;
+            width: 4px;
+            height: 100%;
+            left: -2px;
+            top: 0;
+        }
+
+        &.stretch-resize-right {
+            cursor: ew-resize;
+            width: 4px;
+            height: 100%;
+            right: -2px;
+            top: 0;
+        }
+
+        &.stretch-resize-top {
+            cursor: n-resize;
+            width: 100%;
+            height: 4px;
+            left: 0;
+            top: -2px;
+        }
+
+        &.stretch-resize-bottom {
+            cursor: n-resize;
+            width: 100%;
+            height: 4px;
+            left: 0;
+            bottom: -2px;
+        }
+    }
+}
+
