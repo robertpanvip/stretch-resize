@@ -5,7 +5,7 @@ import "./index.scss";
 type ResizeType = "top" | "bottom" | "left" | "right";
 type MinSize = { width: number; height: number };
 
-interface ResizeProps {
+export interface ResizeProps {
     /**类名称**/
     className?: string;
     /**内联样式**/
@@ -22,13 +22,13 @@ interface ResizeProps {
 const defaultMinSize = { width: 0, height: 0 };
 /**
  * 调整元素的宽高
- * @param className
- * @param style
- * @param minSize
- * @param type
+ * @param className 类名称
+ * @param style 内联样式
+ * @param minSize 宽度和高度的最小值
+ * @param type 哪些边允许调整
  * @param children
- * @param onResizeEnd
- * @param is
+ * @param onResizeEnd 调整尺寸完成后的回调
+ * @param is 最外面包裹的元素默认是div
  * @constructor
  */
 const StretchResize: React.FC<ResizeProps> = ({
