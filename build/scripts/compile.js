@@ -1,7 +1,6 @@
 const gulp = require('gulp');
 const babel = require('gulp-babel');
 const ts = require('gulp-typescript');
-const replace = require('gulp-string-replace');
 const sass = require('gulp-sass');
 //错误处理提示插件
 const plumber = require('gulp-plumber');
@@ -36,17 +35,19 @@ module.exports = function () {
             .pipe(gulp.dest('../../lib'));
     });
     gulp.task('compile-es-tsd', () => {
+        const config = JSON.parse(JSON.stringify(tsconfig.compilerOptions))
+        config.emitDeclarationOnly = true
         return gulp.src([
             '../../src/**/**/*.tsx',
             '../../src/**/**/*.ts',
-            '!../../src/**/**/__test__/**',
+            '!../../src/!**!/!**/__test__/!**',
         ]).pipe(logger({
             before: 'generate tsd...',
             after: 'generate tsd complete!',
             extname: '.ts',
             showChange: true
         }))
-            .pipe(ts(tsconfig.compilerOptions))
+            .pipe(ts(config))
             .dts
             .pipe(logger({
                 before: 'write tsd ...',
@@ -58,6 +59,8 @@ module.exports = function () {
             .pipe(gulp.dest('../../es'));
     });
     gulp.task('compile-lib-tsd', () => {
+        const config = JSON.parse(JSON.stringify(tsconfig.compilerOptions))
+        config.emitDeclarationOnly = true
         return gulp.src([
             '../../src/**/**/*.tsx',
             '../../src/**/**/*.ts',
@@ -68,7 +71,7 @@ module.exports = function () {
             extname: '.ts',
             showChange: true
         }))
-            .pipe(ts(tsconfig.compilerOptions))
+            .pipe(ts(config))
             .dts
             .pipe(logger({
                 before: 'write tsd ...',
@@ -80,12 +83,13 @@ module.exports = function () {
             .pipe(gulp.dest('../../lib'));
     });
     gulp.task('compile-with-es', () => {
-
+        const config = JSON.parse(JSON.stringify(tsconfig.compilerOptions))
+        delete config.declaration;
         return gulp.src([
             '../../src/**/**/*.tsx',
             '../../src/**/**/*.ts',
             '!../../src/**/**/__test__/**',
-        ])
+        ]).pipe(ts(config))
             .pipe(logger({
                 before: 'Starting translate ...',
                 after: 'translate complete!',
@@ -97,13 +101,6 @@ module.exports = function () {
                     [
                         "@babel/preset-react"
                     ],
-                    [
-                        "@babel/preset-typescript",
-                        {
-                            "isTSX": true,
-                            "allExtensions": true
-                        }
-                    ]
                 ],
                 "plugins": [
                     [
