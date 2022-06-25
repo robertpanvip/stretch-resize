@@ -1,7 +1,5 @@
 import React, { useRef } from "react";
 import classNames from "classnames";
-import "./index.scss";
-
 type ResizeType = "top" | "bottom" | "left" | "right";
 type MinSize = { width: number; height: number };
 

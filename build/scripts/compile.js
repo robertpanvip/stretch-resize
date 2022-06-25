@@ -15,7 +15,7 @@ module.exports = function () {
         await deleteFolder('../../es');
         done()
     });
-    gulp.task('copy-scss', () => {
+    gulp.task('copy-scss-es', () => {
         return gulp.src('../../src/index.scss')
             .pipe(logger({
                 before: 'copy scss...',
@@ -24,6 +24,16 @@ module.exports = function () {
                 showChange: true
             }))
             .pipe(gulp.dest('../../es'));
+    });
+    gulp.task('copy-scss-lib', () => {
+        return gulp.src('../../src/index.scss')
+            .pipe(logger({
+                before: 'copy scss...',
+                after: 'copy scss complete!',
+                extname: '.scss',
+                showChange: true
+            }))
+            .pipe(gulp.dest('../../lib'));
     });
     gulp.task('compile-es-tsd', () => {
         return gulp.src([
@@ -155,7 +165,6 @@ module.exports = function () {
                 ]
             }))
             .pipe(plumber())
-            .pipe(replace('("./index.scss")', '("./index.css")'))
             .pipe(logger({
                 before: 'write js ...',
                 after: 'write js complete!',
@@ -171,7 +180,7 @@ module.exports = function () {
     });
     gulp.task(
         'compile',
-        gulp.series('clean', gulp.parallel('compile-with-es','copy-scss','compile-with-lib', 'compile-es-tsd','compile-lib-tsd','compile-scss'))
+        gulp.series('clean', gulp.parallel('compile-with-es','copy-scss-es','copy-scss-lib','compile-with-lib', 'compile-es-tsd','compile-lib-tsd','compile-scss'))
     );
     runTask('compile')
 };
