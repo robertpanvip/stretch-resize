@@ -2,6 +2,7 @@ const program = require('commander');
 const compile = require('./compile');
 const unpkg = require('./unpkg');
 const publish = require('./publish');
+const doc = require('./doc');
 program.on('--help', () => {
     console.log('  Usage:');
     console.log('        compile  compile project');
@@ -17,6 +18,8 @@ program
             unpkg()
         }else if (command === 'publish') {
             publish()
+        }else if (command === 'doc') {
+            doc()
         }
     })
     .parse(process.argv);

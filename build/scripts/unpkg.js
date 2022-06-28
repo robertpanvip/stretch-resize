@@ -25,7 +25,7 @@ All rights reserved.
         })
     ];
     const compiler = webpack({
-        entry: '../../src/index.ts',
+        entry: '../../src/index.tsx',
         output: {
             path: path.join(__dirname, '../../dist'),
             filename: name,

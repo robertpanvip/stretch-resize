@@ -1,5 +1,6 @@
 import * as React from 'react';
 import StretchResize from "../src";
+import  "../src/index.scss"
 /***
  *
  * @constructor

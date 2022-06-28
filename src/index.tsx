@@ -1,23 +1,26 @@
-import React, { useRef } from "react";
+import * as React from "react";
+import {useRef} from "react";
 import classNames from "classnames";
+
 type ResizeType = "top" | "bottom" | "left" | "right";
 type MinSize = { width: number; height: number };
 
 export interface ResizeProps {
-    /**类名称**/
+    /** 类名称*/
     className?: string;
-    /**内联样式**/
+    /** 内联样式*/
     style?: React.CSSProperties;
-    /**最外面包裹的元素默认是div**/
+    /** 最外面包裹的元素默认是div*/
     is?: string;
-    /**宽度和高度的最小值**/
+    /** 宽度和高度的最小值*/
     minSize?: Partial<MinSize> | number;
-    /**哪些边允许调整**/
+    /** 哪些边允许调整*/
     type?: ResizeType | Array<ResizeType> | "all";
-    /**调整尺寸完成后的回调**/
+    /** 调整尺寸完成后的回调*/
     onResizeEnd?: (rect: DOMRect) => void;
 }
-const defaultMinSize = { width: 0, height: 0 };
+
+const defaultMinSize = {width: 0, height: 0};
 /**
  * 调整元素的宽高
  * @param className 类名称
@@ -30,21 +33,21 @@ const defaultMinSize = { width: 0, height: 0 };
  * @constructor
  */
 const StretchResize: React.FC<ResizeProps> = ({
-                                           className,
-                                           style,
-                                           minSize = defaultMinSize,
-                                           type = "all",
-                                           children,
-                                           onResizeEnd,
-                                           is = "div",
-                                       }) => {
-    const ref = useRef<{ dragStart?:number,cssText?:string }>({});
+                                                  className,
+                                                  style,
+                                                  minSize = defaultMinSize,
+                                                  type = "all",
+                                                  children,
+                                                  onResizeEnd,
+                                                  is = "div",
+                                              }) => {
+    const ref = useRef<{ dragStart?: number, cssText?: string }>({});
     const drag = useRef<HTMLDivElement>(null);
 
     const _minSize: MinSize =
         typeof minSize == "object"
-            ? { ...defaultMinSize, ...minSize }
-            : { width: minSize, height: minSize };
+            ? {...defaultMinSize, ...minSize}
+            : {width: minSize, height: minSize};
 
     let _type: Array<ResizeType>;
     if (Array.isArray(type)) {
@@ -106,7 +109,7 @@ const StretchResize: React.FC<ResizeProps> = ({
     };
     return React.createElement(
         is,
-        { ref: drag, style, className: classNames('stretch-resize', className) },
+        {ref: drag, style, className: classNames('stretch-resize', className)},
         <>
             {children}
             {_type.map((item) => {
@@ -130,4 +133,3 @@ const StretchResize: React.FC<ResizeProps> = ({
 };
 
 export default StretchResize;
-
