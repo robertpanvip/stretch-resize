@@ -3,6 +3,11 @@
 ``` javascript
 npm install stretch-resize
 ```
+🔨 **Usage**
+> Note: `import "stretch-resize/lib/index.css"`
+
+see demo
+
 📦 **Description**
 
 调整元素的宽高

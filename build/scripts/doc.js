@@ -16,6 +16,11 @@ module.exports = async function () {
 \`\`\` javascript
 npm install ${packageJSon.name}
 \`\`\`
+🔨 **Usage**
+> Note: \`import "${packageJSon.name}/lib/index.css"\`
+
+see demo
+
 ${md}
     `.replace('#### Props',"🖥 **Props**")
         .replace('### 📦 Description','📦 **Description**')
