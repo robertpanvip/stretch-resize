@@ -4,17 +4,17 @@ const logger = require('gulp-logger');
 const pkg = require('../../package.json');
 const chalk = require('chalk'); // 改变屏幕文字颜色
 const fs = require('fs')
+const {fetchUrl: fetch} = require("fetch");
 const log = content => console.log(chalk.green(content));
 
 const {deleteFolder, runTask, runCmd} = require("./util");
-
 
 const config = {
     baseDir: `../../../${pkg.name}-npm`
 };
 
 const autoUpgrade = (str) => {
-    let arr = str.split('.').map(it=>Number(it));
+    let arr = str.split('.').map(it => Number(it));
     const autoUpgradeVersion = (arr, index) => {
         if (index === 0) {
             arr[0] = arr[0] + 1;
@@ -29,7 +29,7 @@ const autoUpgrade = (str) => {
         }
     }
     autoUpgradeVersion(arr, arr.length - 1);
-    return arr.map(it=>Number(it)).join('.');
+    return arr.map(it => Number(it)).join('.');
 }
 
 //cwd
@@ -56,11 +56,23 @@ module.exports = async function () {
         log(`删除 ${config.baseDir}/es 结束`)
         cb();
     });
-    gulp.task('copy-info', () => {
+    gulp.task('copy-info', async () => {
         log(`生成 package 开始`)
         const json = require('../../package.json');
+        const res = await new Promise((resolve, reject) => {
+            fetch('https://www.unpkg.com/stretch-resize@latest',(error, meta)=>{
+                if(!error){
+                    resolve({url:meta.finalUrl})
+                }else{
+                    log(`获取版本号失败`)
+                    reject(error)
+                }
+            })
+        })
+        const matches = res.url.match(/@([0-9]*\.[0-9]*\.[0-9])*/)
+        res.version = matches[1]
         json.version = autoUpgrade(json.version)
-            delete json.devDependencies;
+        delete json.devDependencies;
         delete json.scripts;
         let jsonStr = JSON.stringify(json, "", "\t")
         const ex = fs.existsSync(`${config.baseDir}/`)
@@ -115,7 +127,7 @@ module.exports = async function () {
 
     gulp.task(
         'publish',
-        gulp.series('clean', 'del-dist', 'copy-info', 'copy-dist', 'copy-es', 'copy-lib','npm-publish')
+        gulp.series('clean', 'del-dist', 'copy-info', 'copy-dist', 'copy-es', 'copy-lib', 'npm-publish')
     );
 
     runTask('publish')

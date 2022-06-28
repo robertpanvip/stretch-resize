@@ -1,6 +1,6 @@
 {
     "name": "stretch-resize",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "拉伸可调整大小",
     "unpkg": "dist/stretch-resize.min.js",
     "main": "lib/index",
@@ -116,6 +116,7 @@
     "dependencies": {
         "@babel/runtime": "latest",
         "classnames": "^2.3.1",
+        "fetch": "^1.1.0",
         "react": "^16.13.1",
         "react-dom": "^16.13.1"
     }
